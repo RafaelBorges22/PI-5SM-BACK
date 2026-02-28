@@ -8,12 +8,19 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/servicos")
 public class ServicoController {
 
     @Autowired
     private ServicoService servicoService;
+
+    @GetMapping
+    public ResponseEntity<List<ServicoResponseDTO>> listarTodos() {
+        return ResponseEntity.ok(servicoService.listarTodos());
+    }
 
     @GetMapping("/{id}")
     public ResponseEntity<ServicoResponseDTO> buscarPorId(@PathVariable Long id) {

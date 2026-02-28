@@ -31,6 +31,8 @@ public class Servico {
 
     private String produto;
 
+    private String servico;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "cliente_id", nullable = false)
     @JsonBackReference
@@ -47,8 +49,4 @@ public class Servico {
 
     @Enumerated(EnumType.STRING)
     private MetodoPagamento metodoPagamento;
-
-    @Enumerated(EnumType.STRING)
-    private Unidade unidade;
-
 }

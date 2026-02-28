@@ -6,15 +6,18 @@ import dsm.api.pi.Entities.Barbeiro;
 import dsm.api.pi.Entities.Cliente;
 import dsm.api.pi.Entities.Servico;
 import dsm.api.pi.Enum.StatusPagamento;
+import dsm.api.pi.Exception.ResourceNotFoundException;
 import dsm.api.pi.Repository.BarbeiroRepository;
 import dsm.api.pi.Repository.ClienteRepository;
 import dsm.api.pi.Repository.ServicoRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -25,6 +28,12 @@ public class ServicoService {
     private final ClienteRepository clienteRepository;
     private final BarbeiroRepository barbeiroRepository;
 
+    public List<ServicoResponseDTO> listarTodos() {
+        return servicoRepository.findAll()
+                .stream()
+                .map(ServicoResponseDTO::new)
+                .toList();
+    }
 
     public ServicoResponseDTO buscarPorId(Long id) {
         Servico servico = servicoRepository.findById(id)
@@ -32,27 +41,12 @@ public class ServicoService {
         return new ServicoResponseDTO(servico);
     }
 
-    //IMPLEMENTAR QUANDO PUDER
-    public List<ServicoResponseDTO> buscarPorBarbeiro(Long barbeiroId) {
-        return servicoRepository.findByBarbeiroId(barbeiroId)
-                .stream()
-                .map(ServicoResponseDTO::new)
-                .collect(Collectors.toList());
-    }
-//ESSE TBM
-    public List<ServicoResponseDTO> buscarPorStatus(StatusPagamento status) {
-        return servicoRepository.findByStatusPagamento(status)
-                .stream()
-                .map(ServicoResponseDTO::new)
-                .collect(Collectors.toList());
-    }
-
     public ServicoResponseDTO criar(ServicoRequestDTO dto) {
-        Cliente cliente = clienteRepository.findById(dto.getClienteId())
-                .orElseThrow(() -> new RuntimeException("Cliente não encontrado com id: " + dto.getClienteId()));
+        Cliente cliente = clienteRepository.findByNome(dto.getNomeCliente())
+                .orElseThrow(() -> new ResourceNotFoundException("Cliente", dto.getNomeCliente()));
 
-        Barbeiro barbeiro = barbeiroRepository.findById(dto.getBarbeiroId())
-                .orElseThrow(() -> new RuntimeException("Barbeiro não encontrado com id: " + dto.getBarbeiroId()));
+        Barbeiro barbeiro = barbeiroRepository.findByNome(dto.getNomeBarbeiro())
+                .orElseThrow(() -> new ResourceNotFoundException("Barbeiro", dto.getNomeBarbeiro()));
 
         Servico servico = Servico.builder()
                 .valor(dto.getValor())
@@ -62,7 +56,7 @@ public class ServicoService {
                 .statusPagamento(dto.getStatusPagamento())
                 .metodoPagamento(dto.getMetodoPagamento())
                 .produto(dto.getProduto())
-                .unidade(dto.getUnidade())
+                .servico(dto.getServico())
                 .build();
 
         return new ServicoResponseDTO(servicoRepository.save(servico));

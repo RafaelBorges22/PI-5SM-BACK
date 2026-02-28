@@ -2,7 +2,7 @@ package dsm.api.pi.DTO.Servico;
 
 import dsm.api.pi.Enum.MetodoPagamento;
 import dsm.api.pi.Enum.StatusPagamento;
-import dsm.api.pi.Enum.Unidade;
+import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 import jakarta.validation.constraints.NotNull;
 import java.math.BigDecimal;
@@ -17,18 +17,19 @@ public class ServicoRequestDTO {
     @NotNull
     private LocalDate dataServico;
 
-    @NotNull
-    private Long clienteId;
+    @NotBlank
+    private String nomeCliente;
 
-    @NotNull
-    private Long barbeiroId;
+    @NotBlank
+    private String nomeBarbeiro;
 
     @NotNull
     private StatusPagamento statusPagamento;
 
+    @NotNull
     private MetodoPagamento metodoPagamento;
 
     private String produto;
 
-    private Unidade unidade;
+    private String servico;
 }
