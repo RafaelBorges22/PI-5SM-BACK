@@ -22,6 +22,9 @@ public class ServicoResponseDTO {
     private String produto;
     private String servico;
     private Unidade unidade;
+    private String pixTxid;
+    private String pixQrCode;
+    private String pixImagemQrCode;
 
     public ServicoResponseDTO(Servico servico) {
         this.id = servico.getId();
@@ -34,6 +37,9 @@ public class ServicoResponseDTO {
         this.produto = servico.getProduto();
         this.unidade = servico.getBarbeiro().getUnidade();
         this.servico = servico.getServico();
+        this.pixTxid = servico.getPixTxid();
+        this.pixQrCode = servico.getPixQrCode();
+        this.pixImagemQrCode = servico.getPixImagemQrCode();
     }
 }
 

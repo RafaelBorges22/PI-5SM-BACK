@@ -49,4 +49,16 @@ public class Servico {
 
     @Enumerated(EnumType.STRING)
     private MetodoPagamento metodoPagamento;
+
+    @Column(name = "pix_txid")
+    private String pixTxid;
+
+    @Column(name = "pix_qrcode", columnDefinition = "TEXT")
+    private String pixQrCode;
+
+    @Column(name = "pix_imagem_qrcode", columnDefinition = "TEXT")
+    private String pixImagemQrCode;
+
+    @Column(name = "pix_loc_id")
+    private String pixLocId;
 }

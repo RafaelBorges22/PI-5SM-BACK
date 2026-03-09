@@ -15,6 +15,7 @@
 
     <properties>
         <java.version>21</java.version>
+        <efi.version>1.1.1</efi.version>
     </properties>
 
     <dependencies>
@@ -57,6 +58,12 @@
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <optional>true</optional>
+        </dependency>
+
+        <dependency>
+            <groupId>br.com.efipay.efisdk</groupId>
+            <artifactId>sdk-java-apis-efi</artifactId>
+            <version>${efi.version}</version>
         </dependency>
 
         <dependency>
