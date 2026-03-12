@@ -3,7 +3,7 @@ package dsm.api.pi.Service;
 import br.com.efi.efisdk.EfiPay;
 import br.com.efi.efisdk.Endpoints;
 import br.com.efi.efisdk.exceptions.EfiPayException;
-import com.fasterxml.jackson.databind.util.JSONPObject;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import dsm.api.pi.Config.PixConfig;
 import dsm.api.pi.DTO.Pix.PixRequestPayload;
 import lombok.RequiredArgsConstructor;
@@ -40,7 +40,6 @@ public class PixService {
     public JSONObject criarCobrancaServico(String nomeCliente, BigDecimal valor, String chavePix) throws Exception {
 
         Map<String, Object> options = new HashMap<>();
-
         options.put("client_id", pixConfig.clientId());
         options.put("client_secret", pixConfig.clientSecret());
         options.put("certificate", pixConfig.certificatePath());
@@ -48,18 +47,16 @@ public class PixService {
 
         Endpoints efi = new Endpoints(options);
 
+        String valorFormatado = valor.setScale(2, RoundingMode.HALF_UP)
+                .toPlainString();
+
         JSONObject body = new JSONObject();
-
-        body.put("calendario", new JSONObject()
-                .put("expiracao", 3600));
-
-        body.put("valor", new JSONObject()
-                .put("original", String.format("%.2f", valor)));
-
+        body.put("calendario", new JSONObject().put("expiracao", 3600));
+        body.put("valor", new JSONObject().put("original", valorFormatado));
         body.put("chave", chavePix);
+        body.put("solicitacaoPagador", "Servico Barbearia - " + nomeCliente);
 
-        body.put("solicitacaoPagador",
-                "Servico Barbearia - " + nomeCliente);
+        log.info(">>> Body enviado para Efí: {}", body);
 
         return efi.call("pixCreateImmediateCharge", new HashMap<>(), body);
     }
@@ -81,7 +78,6 @@ public class PixService {
     public JSONObject gerarQrCodeImagem(String locId) throws Exception {
 
         Map<String, Object> options = new HashMap<>();
-
         options.put("client_id", pixConfig.clientId());
         options.put("client_secret", pixConfig.clientSecret());
         options.put("certificate", pixConfig.certificatePath());
@@ -92,7 +88,22 @@ public class PixService {
         Map<String, String> params = new HashMap<>();
         params.put("id", locId);
 
-        return (JSONObject) efi.call("pixGenerateQRCode", params, new HashMap<>());
+        Object resultado = efi.call("pixGenerateQRCode", params, new HashMap<>());
+
+        log.info(">>> Tipo retornado: {} | Conteúdo: {}", resultado.getClass().getName(), resultado);
+
+        if (resultado instanceof JSONObject json) {
+            return json;
+        }
+
+        if (resultado instanceof Map<?, ?> map) {
+            ObjectMapper mapper = new ObjectMapper();
+            String jsonString = mapper.writeValueAsString(map);
+            return new JSONObject(jsonString);
+        }
+
+        log.warn(">>> Tipo inesperado do SDK: {}", resultado.getClass());
+        return null;
     }
 
     private JSONObject executarOperacao(String operacao, Map<String, String> params) {
@@ -115,26 +126,49 @@ public class PixService {
 
     public JSONObject criarQrCode(PixRequestPayload pixRequestPayload) {
 
+        String valorFormatado = pixRequestPayload.valor()
+                .setScale(2, RoundingMode.HALF_UP)
+                .toPlainString();
+
         JSONObject body = new JSONObject();
         body.put("calendario", new JSONObject().put("expiracao", 3600));
-        body.put("devedor", new JSONObject().put("cpf", "12345678909").put("nome", "Feltex Silva"));
-        body.put("valor", new JSONObject().put("original", pixRequestPayload.valor()));
+        body.put("devedor", new JSONObject()
+                .put("cpf", "12345678909")
+                .put("nome", "Feltex Silva"));
+        body.put("valor", new JSONObject().put("original", valorFormatado));
         body.put("chave", pixRequestPayload.chave());
 
         JSONArray infoAdicionais = new JSONArray();
-        infoAdicionais.put(
-                new JSONObject().put("nome", "Campo 1").put("valor", "Informação Adicional1"));
-        infoAdicionais.put(
-                new JSONObject().put("nome", "Campo 2").put("valor", "Informação Adicional2"));
+        infoAdicionais.put(new JSONObject().put("nome", "Campo 1").put("valor", "Informação Adicional1"));
+        infoAdicionais.put(new JSONObject().put("nome", "Campo 2").put("valor", "Informação Adicional2"));
         body.put("infoAdicionais", infoAdicionais);
 
         try {
             EfiPay efi = criarClienteEfi();
-            return efi.call("pixCreateImmediateCharge", new HashMap<>(), body);
+            JSONObject cobranca = efi.call("pixCreateImmediateCharge", new HashMap<>(), body);
+
+            // Pega o locId e já busca o QR Code
+            String locId = cobranca.getJSONObject("loc").get("id").toString();
+            JSONObject qrCode = gerarQrCodeImagem(locId);
+
+            // Retorna tudo junto
+            JSONObject resposta = new JSONObject();
+            resposta.put("txid", cobranca.getString("txid"));
+            resposta.put("pixCopiaECola", cobranca.getString("pixCopiaECola"));
+            resposta.put("status", cobranca.getString("status"));
+            resposta.put("valor", valorFormatado);
+
+            if (qrCode != null) {
+                resposta.put("qrcode", qrCode.optString("qrcode"));
+                resposta.put("imagemQrcode", qrCode.optString("imagemQrcode"));
+            }
+
+            return resposta;
+
         } catch (EfiPayException e) {
             log.error("Erro da API {} {}", e.getErrorDescription(), e.getError());
         } catch (Exception e) {
-            log.error("Erro genérico {}", e.getMessage());
+            log.error("Erro genérico {}", e.getMessage(), e);
         }
         return null;
     }

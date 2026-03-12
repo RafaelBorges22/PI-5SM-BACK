@@ -2,6 +2,7 @@ package dsm.api.pi.Controller;
 
 import dsm.api.pi.DTO.Pix.PixRequestPayload;
 import dsm.api.pi.Service.PixService;
+import org.json.JSONObject;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -29,12 +30,6 @@ public record PixController(PixService pixService) {
         return ResponseEntity.ok().body(response.toString());
     }
 
-    @PostMapping
-    public ResponseEntity<String> criarQrCode(@RequestBody PixRequestPayload pixRequestPayload){
-        var response = this.pixService.criarQrCode(pixRequestPayload);
-        return  ResponseEntity.ok().body(response.toString());
-    }
-
     @DeleteMapping
     public ResponseEntity<String> deletarChavePix(@RequestParam("chavePix") String chavePix) {
         var response = this.pixService.deletarChavePix(chavePix);
@@ -42,5 +37,31 @@ public record PixController(PixService pixService) {
                 .body(response.toString());
     }
 
+    @PostMapping
+    public ResponseEntity<String> criarQrCode(@RequestBody PixRequestPayload pixRequestPayload) {
+        var response = this.pixService.criarQrCode(pixRequestPayload);
+
+        if (response == null) {
+            return ResponseEntity.internalServerError()
+                    .body("{\"erro\": \"Falha ao gerar QR Code PIX\"}");
+        }
+
+        return ResponseEntity.ok().body(response.toString());
+    }
+
+    @GetMapping("/qrcode")
+    public ResponseEntity<String> gerarQrCode(@RequestParam("id") String locId) {
+        try {
+            JSONObject response = this.pixService.gerarQrCodeImagem(locId);
+            if (response == null) {
+                return ResponseEntity.internalServerError()
+                        .body("{\"erro\": \"Falha ao gerar QR Code\"}");
+            }
+            return ResponseEntity.ok().body(response.toString());
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError()
+                    .body("{\"erro\": \"" + e.getMessage() + "\"}");
+        }
+    }
 
 }

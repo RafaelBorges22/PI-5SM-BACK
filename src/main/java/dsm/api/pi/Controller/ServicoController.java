@@ -1,5 +1,6 @@
 package dsm.api.pi.Controller;
 
+import dsm.api.pi.DTO.Servico.ServiceAndPix;
 import dsm.api.pi.DTO.Servico.ServicoRequestDTO;
 import dsm.api.pi.DTO.Servico.ServicoResponseDTO;
 import dsm.api.pi.Service.ServicoService;
@@ -33,7 +34,16 @@ public class ServicoController {
     }
 
     @PostMapping
-    public ResponseEntity<ServicoResponseDTO> criar(@Valid @RequestBody ServicoRequestDTO dto) {
-        return ResponseEntity.status(201).body(servicoService.criar(dto));
+    public ResponseEntity<?> criarServico(@Valid @RequestBody ServiceAndPix request) {
+
+        ServicoResponseDTO response = servicoService.criarServico(request);
+
+        return ResponseEntity.ok(response);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deletarServico(@PathVariable Long id) {
+        servicoService.deletarServico(id);
+        return ResponseEntity.noContent().build();
     }
 }
