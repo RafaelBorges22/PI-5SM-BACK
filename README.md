@@ -1,6 +1,6 @@
 # 💈 UP Barber
 
-> API REST back-end para o sistema de autoatendimento de barbearia — o "totem" do corte perfeito.
+> API REST back-end para o sistema de autoatendimento de barbearia.
 
 ---
 
