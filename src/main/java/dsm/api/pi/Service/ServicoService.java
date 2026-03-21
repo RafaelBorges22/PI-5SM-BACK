@@ -1,5 +1,6 @@
 package dsm.api.pi.Service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import dsm.api.pi.Config.PixConfig;
 import dsm.api.pi.DTO.Pix.PixRequestPayload;
 import dsm.api.pi.DTO.Servico.ServiceAndPix;
@@ -32,10 +33,11 @@ import java.util.stream.Collectors;
 public class ServicoService {
 
     private final ServicoRepository servicoRepository;
-    private final ClienteRepository clienteRepository;
     private final BarbeiroRepository barbeiroRepository;
     private final PixService pixService;
     private final PixConfig pixConfig;
+    private final ObjectMapper objectMapper;
+
 
     public List<ServicoResponseDTO> listarTodos() {
         return servicoRepository.findAll()
@@ -50,51 +52,66 @@ public class ServicoService {
         return new ServicoResponseDTO(servico);
     }
 
-    public ServicoResponseDTO criarServico(ServiceAndPix request) {
+    public ServicoResponseDTO criarServico(Map<String, Object> body) {
 
-        ServicoRequestDTO data = request.getData();
-        PixRequestPayload pix = request.getPix();
+        // Detecta se é PIX (body tem campo "data") ou pagamento simples
+        boolean isPix = body.containsKey("data");
 
-        Cliente cliente = clienteRepository
-                .findByNome(data.getNomeCliente())
-                .orElseThrow(() ->
-                        new ResourceNotFoundException("Cliente", data.getNomeCliente()));
+        if (isPix) {
+            return criarServicoComPix(body);
+        } else {
+            return criarServicoSimples(body);
+        }
+    }
+
+    // Cartão / Dinheiro — body direto
+    private ServicoResponseDTO criarServicoSimples(Map<String, Object> body) {
+        ServicoRequestDTO dto = objectMapper.convertValue(body, ServicoRequestDTO.class);
 
         Barbeiro barbeiro = barbeiroRepository
-                .findByNome(data.getNomeBarbeiro())
-                .orElseThrow(() ->
-                        new ResourceNotFoundException("Barbeiro", data.getNomeBarbeiro()));
+                .findByNome(dto.getNomeBarbeiro())
+                .orElseThrow(() -> new ResourceNotFoundException("Barbeiro", dto.getNomeBarbeiro()));
 
         Servico servico = new Servico();
-
-        servico.setCliente(cliente);
+        servico.setNomeCliente(dto.getNomeCliente());
         servico.setBarbeiro(barbeiro);
-        servico.setValor(data.getValor());
-        servico.setDataServico(data.getDataServico());
-        servico.setMetodoPagamento(data.getMetodoPagamento());
-        servico.setStatusPagamento(data.getStatusPagamento());
-        servico.setProduto(data.getProduto());
-        servico.setServico(data.getServico());
+        servico.setValor(dto.getValor());
+        servico.setDataServico(dto.getDataServico());
+        servico.setMetodoPagamento(dto.getMetodoPagamento());
+        servico.setStatusPagamento(dto.getStatusPagamento());
+        servico.setProduto(dto.getProduto());
+        servico.setServico(dto.getServico());
 
-        // gerar pix se necessário
-        if (data.getMetodoPagamento() == MetodoPagamento.PIX) {
-
-            if (pix == null) {
-                throw new IllegalArgumentException("Dados do PIX são obrigatórios");
-            }
-
-            gerarEInjetarPix(servico, data);
-        }
-
-        Servico salvo = servicoRepository.save(servico);
-
-        return new ServicoResponseDTO(salvo);
+        return new ServicoResponseDTO(servicoRepository.save(servico));
     }
+
+    // PIX — body com "data" e "pix"
+    private ServicoResponseDTO criarServicoComPix(Map<String, Object> body) {
+        Map<String, Object> dataMap = (Map<String, Object>) body.get("data");
+        ServicoRequestDTO dto = objectMapper.convertValue(dataMap, ServicoRequestDTO.class);
+
+        Barbeiro barbeiro = barbeiroRepository
+                .findByNome(dto.getNomeBarbeiro())
+                .orElseThrow(() -> new ResourceNotFoundException("Barbeiro", dto.getNomeBarbeiro()));
+
+        Servico servico = new Servico();
+        servico.setNomeCliente(dto.getNomeCliente());
+        servico.setBarbeiro(barbeiro);
+        servico.setValor(dto.getValor());
+        servico.setDataServico(dto.getDataServico());
+        servico.setMetodoPagamento(MetodoPagamento.PIX);
+        servico.setStatusPagamento(StatusPagamento.PENDENTE);
+        servico.setProduto(dto.getProduto());
+        servico.setServico(dto.getServico());
+
+        gerarEInjetarPix(servico, dto);
+
+        return new ServicoResponseDTO(servicoRepository.save(servico));
+    }
+
     private void gerarEInjetarPix(Servico servico, ServicoRequestDTO dto) {
         try {
             log.info(">>> Iniciando geração PIX para cliente: {}", dto.getNomeCliente());
-            log.info(">>> Chave PIX config: {}", pixConfig.chavePix());
-            log.info(">>> Valor: {}", dto.getValor());
 
             JSONObject cobranca = pixService.criarCobrancaServico(
                     dto.getNomeCliente(),
@@ -102,26 +119,15 @@ public class ServicoService {
                     pixConfig.chavePix()
             );
 
-            log.info(">>> Resposta cobrança: {}", cobranca);
-
-            if (cobranca == null) {
-                log.warn("PIX não gerado: resposta nula da Efí");
-                return;
-            }
-
-            // Verifica se a resposta contém erro
-            if (cobranca.has("erro")) {
-                log.error(">>> Erro retornado pela Efí: {}", cobranca.getString("erro"));
+            if (cobranca == null || cobranca.has("erro")) {
+                log.warn("PIX não gerado: {}", cobranca);
                 return;
             }
 
             String txid = cobranca.getString("txid");
             String locId = cobranca.getJSONObject("loc").get("id").toString();
 
-            log.info(">>> txid: {} | locId: {}", txid, locId);
-
             JSONObject qrData = pixService.gerarQrCodeImagem(locId);
-            log.info(">>> QR Data: {}", qrData);
 
             if (qrData != null) {
                 servico.setPixTxid(txid);
@@ -132,7 +138,7 @@ public class ServicoService {
             }
 
         } catch (Exception e) {
-            log.error(">>> ERRO COMPLETO ao gerar PIX: {}", e.getMessage(), e);
+            log.error(">>> ERRO ao gerar PIX: {}", e.getMessage(), e);
         }
     }
     public Object buscarServicosHoje() {

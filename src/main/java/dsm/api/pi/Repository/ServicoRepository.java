@@ -16,9 +16,6 @@ public interface ServicoRepository extends JpaRepository<Servico, Long> {
     // Buscar serviços de hoje
     List<Servico> findByDataServico(LocalDate data);
 
-    // Buscar por cliente
-    List<Servico> findByClienteId(Long clienteId);
-
     // Buscar por barbeiro
     List<Servico> findByBarbeiroId(Long barbeiroId);
 
