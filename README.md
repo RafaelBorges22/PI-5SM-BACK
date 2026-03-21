@@ -121,6 +121,8 @@ src/
 - [x] Integração com gateway de pagamento via Pix com EFI Pay 
 
 ---
+## ⚠️**Documentação da API (Swagger)** 
+Assim que subir o servidor local acesse a url `http://localhost:8080/swagger-ui/index.html`.
 
 ## 👨‍💻 Autores
 
