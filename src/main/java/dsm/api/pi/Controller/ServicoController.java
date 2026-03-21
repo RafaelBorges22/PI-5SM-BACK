@@ -1,15 +1,14 @@
 package dsm.api.pi.Controller;
 
-import dsm.api.pi.DTO.Servico.ServiceAndPix;
-import dsm.api.pi.DTO.Servico.ServicoRequestDTO;
+
 import dsm.api.pi.DTO.Servico.ServicoResponseDTO;
 import dsm.api.pi.Service.ServicoService;
-import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/servicos")
@@ -34,11 +33,9 @@ public class ServicoController {
     }
 
     @PostMapping
-    public ResponseEntity<?> criarServico(@Valid @RequestBody ServiceAndPix request) {
-
-        ServicoResponseDTO response = servicoService.criarServico(request);
-
-        return ResponseEntity.ok(response);
+    public ResponseEntity<ServicoResponseDTO> criarServico(
+            @RequestBody Map<String, Object> body) {
+        return ResponseEntity.ok(servicoService.criarServico(body));
     }
 
     @DeleteMapping("/{id}")

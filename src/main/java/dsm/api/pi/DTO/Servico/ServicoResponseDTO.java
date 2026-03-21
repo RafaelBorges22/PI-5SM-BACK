@@ -30,7 +30,7 @@ public class ServicoResponseDTO {
         this.id = servico.getId();
         this.valor = servico.getValor();
         this.dataServico = servico.getDataServico();
-        this.nomeCliente = servico.getCliente().getNome();
+        this.nomeCliente = servico.getNomeCliente();
         this.nomeBarbeiro = servico.getBarbeiro().getNome();
         this.statusPagamento = servico.getStatusPagamento();
         this.metodoPagamento = servico.getMetodoPagamento();

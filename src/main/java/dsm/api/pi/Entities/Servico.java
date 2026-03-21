@@ -33,10 +33,8 @@ public class Servico {
 
     private String servico;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "cliente_id", nullable = false)
-    @JsonBackReference
-    private Cliente cliente;
+    @Column(name = "nome_cliente")
+    private String nomeCliente;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "barbeiro_id", nullable = false)
