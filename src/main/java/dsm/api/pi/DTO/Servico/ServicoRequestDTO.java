@@ -14,7 +14,6 @@ public class ServicoRequestDTO {
     @NotNull
     private BigDecimal valor;
 
-    @NotNull
     private LocalDate dataServico;
 
     @NotBlank

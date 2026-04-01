@@ -76,7 +76,7 @@ public class ServicoService {
         servico.setNomeCliente(dto.getNomeCliente());
         servico.setBarbeiro(barbeiro);
         servico.setValor(dto.getValor());
-        servico.setDataServico(dto.getDataServico());
+        servico.setDataServico(LocalDate.now());
         servico.setMetodoPagamento(dto.getMetodoPagamento());
         servico.setStatusPagamento(dto.getStatusPagamento());
         servico.setProduto(dto.getProduto());
@@ -98,7 +98,7 @@ public class ServicoService {
         servico.setNomeCliente(dto.getNomeCliente());
         servico.setBarbeiro(barbeiro);
         servico.setValor(dto.getValor());
-        servico.setDataServico(dto.getDataServico());
+        servico.setDataServico(LocalDate.now());
         servico.setMetodoPagamento(MetodoPagamento.PIX);
         servico.setStatusPagamento(StatusPagamento.PENDENTE);
         servico.setProduto(dto.getProduto());

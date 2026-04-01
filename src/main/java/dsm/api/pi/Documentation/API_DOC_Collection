@@ -1,0 +1,338 @@
+{
+  "info": {
+    "_postman_id": "be66bc44-d077-4c5e-9d60-214d178f8d1b",
+    "name": "API-UP",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "38183974"
+  },
+  "item": [
+    {
+      "name": "GetTodayService",
+      "protocolProfileBehavior": {
+        "disableBodyPruning": true
+      },
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          },
+          {
+            "key": "Accept",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": ""
+        },
+        "url": {
+          "raw": "http://localhost:8080/api/servicos/hoje",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "servicos",
+            "hoje"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "GetBarbeiro",
+      "protocolProfileBehavior": {
+        "disableBodyPruning": true
+      },
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          },
+          {
+            "key": "Accept",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": ""
+        },
+        "url": {
+          "raw": "http://localhost:8080/api/barbeiro",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "barbeiro"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "GetClient",
+      "protocolProfileBehavior": {
+        "disableBodyPruning": true
+      },
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          },
+          {
+            "key": "Accept",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": ""
+        },
+        "url": {
+          "raw": "http://localhost:8080/api/clientes",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "clientes"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "PatchBarbeiro",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          },
+          {
+            "key": "Accept",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"nome\":\"Deltrano\"\r\n}"
+        },
+        "url": {
+          "raw": "http://localhost:8080/api/barbeiro/5",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "barbeiro",
+            "5"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "CreateBarbeiro",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          },
+          {
+            "key": "Accept",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"nome\": \"Ninguem\",\r\n    \"telefone\":\"(11) 99999-9999\",\r\n    \"unidade\":\"UNIDADE1\"\r\n}\r\n\r\n\r\n"
+        },
+        "url": {
+          "raw": "http://localhost:8080/api/barbeiro",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "barbeiro"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "DelBarbeiro",
+      "request": {
+        "method": "DELETE",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          },
+          {
+            "key": "Accept",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"nome\":\"Fulano\",\r\n    \"telefone\":\"(11) 99999-9999\",\r\n    \"unidade\":\"\"\r\n}"
+        },
+        "url": {
+          "raw": "http://localhost:8080/api/barbeiro/9",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "barbeiro",
+            "9"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "CreateServicoSimple",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          },
+          {
+            "key": "Accept",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"valor\": 50.00,\r\n    \"dataServico\": \"2026-03-21\",\r\n    \"nomeCliente\": \"João Silva\",\r\n    \"nomeBarbeiro\": \"Fulano\",\r\n    \"statusPagamento\": \"PAGO\",\r\n    \"metodoPagamento\": \"CARTAO_DEBITO\",\r\n    \"produto\": \"Gel\",\r\n    \"servico\": \"Corte de Cabelo\"\r\n}"
+        },
+        "url": {
+          "raw": "http://localhost:8080/api/servicos",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "servicos"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "CreateServicoPix",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"data\": {\r\n        \"valor\": 50.00,\r\n        \"dataServico\": \"2026-03-21\",\r\n        \"nomeCliente\": \"Deltrano\",\r\n        \"nomeBarbeiro\": \"Ninguem\",\r\n        \"statusPagamento\": \"PENDENTE\",\r\n        \"metodoPagamento\": \"PIX\",\r\n        \"produto\": \"Pomada Modeladora\",\r\n        \"servico\": \"Corte + Barba\"\r\n    },\r\n    \"pix\": {\r\n        \"chave\": \"31b007ea-f1f0-48be-a72d-67ed74ddd8d2\",\r\n        \"valor\": \"50.00\"\r\n    }\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:8080/api/servicos",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "servicos"
+          ]
+        },
+        "description": "Generated from cURL: curl -X POST http://localhost:8080/api/servicos \\\r\n-H \"Content-Type: application/json\" \\\r\n-d '{\r\n  \"valor\": 45.00,\r\n  \"dataServico\": \"2026-03-11\",\r\n  \"nomeCliente\": \"João\",\r\n  \"nomeBarbeiro\": \"Carlos\",\r\n  \"statusPagamento\": \"PENDENTE\",\r\n  \"metodoPagamento\": \"PIX\",\r\n  \"produto\": \"Pomada Modeladora\",\r\n  \"servico\": \"Corte Degradê\"\r\n}'"
+      },
+      "response": []
+    },
+    {
+      "name": "DelServico",
+      "request": {
+        "method": "DELETE",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          },
+          {
+            "key": "Accept",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"valor\": 50.00,\r\n    \"dataServico\": \"2026-02-28\",\r\n    \"nomeCliente\": \"João Silva\",\r\n    \"nomeBarbeiro\": \"Fulano\",\r\n    \"statusPagamento\": \"PAGO\",\r\n    \"metodoPagamento\": \"CARTAO_DEBITO\",\r\n    \"produto\": \"Gel\",\r\n    \"servico\":\"Cabelo + Barba\"\r\n}\r\n\r\n"
+        },
+        "url": {
+          "raw": "http://localhost:8080/api/servicos/7",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "servicos",
+            "7"
+          ]
+        }
+      },
+      "response": []
+    }
+  ]
+}

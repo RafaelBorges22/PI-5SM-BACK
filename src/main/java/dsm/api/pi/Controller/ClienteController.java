@@ -4,6 +4,7 @@ import dsm.api.pi.DTO.Cliente.ClienteRequestDTO;
 import dsm.api.pi.DTO.Cliente.ClienteResponseDTO;
 import dsm.api.pi.DTO.Cliente.ClienteUpdateDTO;
 import dsm.api.pi.Service.ClienteService;
+import io.swagger.v3.oas.annotations.Hidden;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@Hidden
 @RestController
 @RequestMapping("/api/clientes")
 @RequiredArgsConstructor

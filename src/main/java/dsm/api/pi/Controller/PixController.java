@@ -2,6 +2,7 @@ package dsm.api.pi.Controller;
 
 import dsm.api.pi.DTO.Pix.PixRequestPayload;
 import dsm.api.pi.Service.PixService;
+import io.swagger.v3.oas.annotations.Hidden;
 import org.json.JSONObject;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+@Hidden
 @RestController
 @RequestMapping(value = "/api/v1/pix", produces = MediaType.APPLICATION_JSON_VALUE)
 public record PixController(PixService pixService) {
