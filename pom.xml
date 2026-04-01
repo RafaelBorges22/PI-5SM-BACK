@@ -61,6 +61,12 @@
         </dependency>
 
         <dependency>
+            <groupId>org.springdoc</groupId>
+            <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+            <version>2.3.0</version>
+        </dependency>
+
+        <dependency>
             <groupId>br.com.efipay.efisdk</groupId>
             <artifactId>sdk-java-apis-efi</artifactId>
             <version>${efi.version}</version>
