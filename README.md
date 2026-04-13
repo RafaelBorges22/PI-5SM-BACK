@@ -50,6 +50,8 @@ docker compose up -d
 
 # Rode a aplicação
 ./mvnw spring-boot:run
+ou
+mvnw clean install
 ```
 
 A API estará disponível em: `http://localhost:8080`
