@@ -2,29 +2,23 @@ package dsm.api.pi.Service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import dsm.api.pi.Config.PixConfig;
-import dsm.api.pi.DTO.Pix.PixRequestPayload;
-import dsm.api.pi.DTO.Servico.ServiceAndPix;
 import dsm.api.pi.DTO.Servico.ServicoRequestDTO;
 import dsm.api.pi.DTO.Servico.ServicoResponseDTO;
 import dsm.api.pi.Entities.Barbeiro;
-import dsm.api.pi.Entities.Cliente;
 import dsm.api.pi.Entities.Servico;
 import dsm.api.pi.Enum.MetodoPagamento;
 import dsm.api.pi.Enum.StatusPagamento;
 import dsm.api.pi.Exception.ResourceNotFoundException;
 import dsm.api.pi.Repository.BarbeiroRepository;
-import dsm.api.pi.Repository.ClienteRepository;
 import dsm.api.pi.Repository.ServicoRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.json.JSONObject;
-import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
